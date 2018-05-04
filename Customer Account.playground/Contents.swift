@@ -30,6 +30,7 @@ class CustomerAccount {
 
 extension CustomerAccount {
     
+    @discardableResult
     func deposit(_ value: Double) -> Bool {
         if value < 0 {
             return false
@@ -39,16 +40,28 @@ extension CustomerAccount {
         return true
     }
     
+    @discardableResult
     func withdraw(_ amount: Double) -> Bool {
         if balance < amount {
             return false
         }
         
-        balance = balance - value
+        balance = balance - amount
+        return true
     }
 }
 
 
+let customer1 = CustomerAccount("c1")
+print(customer1.description)
+customer1.deposit(2010.34)
+print(customer1.description)
+customer1.withdraw(23.1)
+print(customer1.description)
+
+let customer2 = CustomerAccount("c2")
+customer2.withdraw(123.21)
+print(customer2.description)
 
 
 
