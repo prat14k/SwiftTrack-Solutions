@@ -3,7 +3,7 @@
 import Foundation
 
 
-class Vinsol {
+struct Vinsol {
     
     var editableStoredProperty = 2  // Stored Property, Editable
     
