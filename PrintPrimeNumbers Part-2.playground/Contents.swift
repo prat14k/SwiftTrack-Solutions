@@ -13,30 +13,33 @@ final class PrimeNumbers {
             return
         }
         
+        var primeNumbers = [Int]()
+        
         // As 2 is a prime number
         print(2)
+        primeNumbers.append(2)
+        
         firstNPrimesCounter -= 1
         if count == 1 {
             return
         }
         
+        
         var currentVal = 3
         while firstNPrimesCounter > 0 {
             
-            let checkingValue = (currentVal/2)
-            
             var isPrime = true
-            if checkingValue >= 2 {
-                for i in 2...checkingValue {
-                    if currentVal % i == 0 {
-                        isPrime = false
-                        break
-                    }
+            
+            for i in primeNumbers {
+                if currentVal % i == 0 {
+                    isPrime = false
+                    break
                 }
             }
             
             if isPrime {
                 print(currentVal)
+                primeNumbers.append(currentVal)
                 firstNPrimesCounter -= 1
             }
             currentVal += 1
@@ -50,4 +53,4 @@ final class PrimeNumbers {
 
 
 
-PrimeNumbers.printfirstPrimeNumber(7)
+PrimeNumbers.printfirstPrimeNumber(10)
