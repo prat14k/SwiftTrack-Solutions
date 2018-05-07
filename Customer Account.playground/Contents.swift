@@ -4,45 +4,41 @@ import Foundation
 
 class CustomerAccount {
     
-    static private var accountHoldersIncrementer: Int = 0
+    static private var accountHoldersIncrementer: Int = 1
     
-    var name : String
-    var accountNumber : Int
+    private(set) var name : String
+    let accountNumber : Int
     
-    private var balance: Double = 1_000
+    private(set) var balance: Double = 1_000
     
     init(_ name: String) {
-        self.name = name
+        self.name = name.isEmpty ? "Customer" : name    // Can make compulsory for non Empty name by making it a failable initializer.
         self.accountNumber = CustomerAccount.accountHoldersIncrementer
         
         CustomerAccount.accountHoldersIncrementer += 1
     }
     
-    var description : String {
-        return "\(name) with Account Number: \(accountNumber) has balance of \(balance)"
-    }
+    var description : String {  return "\(name) with Account Number: \(accountNumber) has balance of \(balance)"    }
     
-    func getBalance() -> Double {
-        return balance
-    }
 }
 
 
 extension CustomerAccount {
     
     @discardableResult
-    func deposit(_ value: Double) -> Bool {
-        if value < 0 {
+    func deposit(_ amount: Double) -> Bool {
+        if amount < 0 {
             return false
         }
         
-        balance = balance + value
+        balance = balance + amount
         return true
     }
     
+    
     @discardableResult
     func withdraw(_ amount: Double) -> Bool {
-        if balance < amount {
+        if amount < 0 || balance < amount {
             return false
         }
         

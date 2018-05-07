@@ -1,67 +1,51 @@
 //: Playground - noun: a place where people can play
 
-import UIKit
+import Foundation
 
 
 class Vehicle {
     
     let name : String
-    private var price : Int
+    private(set) var price : Double
     
-    init(vehicleName: String, price: Int) {
-        name = vehicleName
-        self.price = price
-    }
-    
-    //Accessor function
-    func getVehiclePrice() -> Int {
-        return price
+    init(name: String, price: Double) {
+        self.name = name.isEmpty ? "Vehicle" : name       // Can make compulsory for non Empty name by making it a failable initializer.
+        self.price = (price > 0) ? price : 0        // Can make compulsory for non negative price by making it a failable initializer.
     }
     
     // Mutator Method
-    func changeVehiclePrice(newPrice : Int) {
+    func changeVehiclePrice(newPrice : Double) {
+        if newPrice < 0 {
+            return
+        }
+        // Extra Checks if needed
+        
         price = newPrice
     }
     
-    var description : String {
-        get {
-            return "The \(name) is currently available in showrooms for the price \(price) units."
-        }
-    }
+    var description : String {  return "The \(name) is currently available in showrooms for the price \(price) units."  }
+    
 }
 
 
 class Bike : Vehicle {
     
-    private let dealer : String
+    let dealer : String
     
-    init(dealerName: String, vehicleName: String, price: Int) {
-        dealer = dealerName
-        super.init(vehicleName: vehicleName, price: price)
+    init(dealer: String, name: String, price: Double) {
+        self.dealer = dealer.isEmpty ? "Dealer" : dealer    // Can make compulsory for non Empty dealer by making it a failable initializer.
+        super.init(name: name, price: price)
     }
     
-    override var description: String {
-        get {
-            return "The \(name) is currently available at \(dealer)'s showrooms for the price \(getVehiclePrice()) units."
-        }
-    }
-    
-    
-    //Accessor function
-    func getDealerName() -> String {
-        return dealer
-    }
+    override var description: String {  return "The \(name) is currently available at \(dealer)'s showrooms for the price \(price) units."  }
     
 }
 
 
 
-var kawasaki = Bike(dealerName: "Suzuki", vehicleName: "Kawasaki", price: 1_00_000)
-
+var kawasaki = Bike(dealer: "Suzuki", name: "Kawasaki", price: 1_00_000)
 print(kawasaki.description)
-
 kawasaki.changeVehiclePrice(newPrice: 1_50_000)
-
 print(kawasaki.description)
 
 
