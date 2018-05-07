@@ -4,8 +4,8 @@ import Foundation
 
 
 public enum FactorialErrors : String, Error {
-    case NegativeValuePassed = "Negative Value Cannot be passed for factorial calculation"
-    case MaxLimitCrossed = "Factorial Calculation Max Limit Crossed"
+    case negativeValuePassed = "Negative Value Cannot be passed for factorial calculation"
+    case maxLimitCrossed = "Factorial Calculation Max Limit Crossed"
 }
 
 
@@ -41,10 +41,10 @@ class Factorials {
 extension Factorials {
     static func factorialFor(_ value: Int) throws -> String {
         if value < 0 {
-            throw FactorialErrors.NegativeValuePassed
+            throw FactorialErrors.negativeValuePassed
         }
         else if value > 170 {
-            throw FactorialErrors.MaxLimitCrossed
+            throw FactorialErrors.maxLimitCrossed
         }
         
         if cachedFactorials[value] != -1 {
