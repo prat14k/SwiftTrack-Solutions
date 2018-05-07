@@ -3,84 +3,56 @@
 import Foundation
 
 
-protocol Description {
+class Category {
     
-    var description : String { get }
+    let name: String
+    private(set) var taxExempted: Bool
     
-}
 
-
-class Category : Description {
-    
-    private var name: String
-    private var taxExempted: Bool
-    
-    
-    var description: String {
-        get { return name }
-    }
-    
-    
-    init(name: String, isTaxExempted taxExempted: Bool) {
+    init(name: String, taxExempted: Bool) {
         self.name = name
         self.taxExempted = taxExempted
     }
     
-    func categoryName() -> String {
-        return name
-    }
-    func isExemptedFromTax() -> Bool {
-        return taxExempted
-    }
     
-    func changeCategory(name: String) {
-        self.name = name
-    }
     func changeTaxExemption(status: Bool) {
+        // Any Checks to be performed
         taxExempted = status
     }
     
 }
 
 
-class Product : Description {
+class Product {
     
-    private let name: String
-    private let imported: Bool
-    private var price: Double
-    private let categoryType: Category
+    let name: String
+    let imported: Bool
+    private(set) var price: Double
+    let category: Category
     private let uuid = UUID()
     
     
-    init(name: String, price: Double, isImported: Bool , category: Category) {
+    init(name: String, price: Double, imported: Bool , category: Category) {
         self.name = name
-        self.price = price
-        imported = isImported
-        categoryType = category
+        self.price = price >= 0 ? price : 0 // Can be make compulsory for non-negative price via failable inits
+        self.imported = imported
+        self.category = category
     }
-    
     
     var description: String {
         return "\(name)  |  \(String(format: "%.2f", price))"
     }
     
-    func category() -> Category {
-        return categoryType
-    }
-    func isImported() -> Bool {
-        return imported
-    }
-    func productName() -> String {
-        return name
-    }
-    func productPrice() -> Double {
-        return price
-    }
+    // Wanted it to not be accessible directly
     func productCode() -> UUID {
         return uuid
     }
     
     func changePrice(_ price: Double) {
+        // Any Checks to be performed
+        if price < 0 {
+            return
+        }
         self.price = price
     }
 }
@@ -89,8 +61,8 @@ class Product : Description {
 
 class ShoppingCart {
     
-    private var productsCart = [UUID:Product]()
-    private var productsQuantity = [UUID:Int]()
+    private var productsCart = [UUID:Product]()   // For storing the products uniquely
+    private var productsQuantity = [UUID:Int]()   // For storing the number of products each
     
     private init() { }
     
@@ -135,18 +107,18 @@ extension ShoppingCart {
         for (uuidCode, product) in productsCart {
             if let quantity = productsQuantity[uuidCode], quantity > 0 {
                 var taxPerItem: Double = 0.0
-                if !(product.category().isExemptedFromTax()) {
-                    taxPerItem += product.productPrice() * 0.1   // 10% import tax
+                if !(product.category.taxExempted) {
+                    taxPerItem += product.price * 0.1   // 10% import tax
                 }
-                if product.isImported() {
-                    taxPerItem += product.productPrice() * 0.05   // 5% import tax
+                if product.imported {
+                    taxPerItem += product.price * 0.05   // 5% import tax
                 }
                 
                 let totalTax = taxPerItem * Double(quantity)
                 
                 print("\(product.description)  |  \(quantity)  |  \(String(format: "%.2f", totalTax))")
                 
-                finalBill += totalTax + product.productPrice()
+                finalBill += totalTax + product.price
             }
         }
         
@@ -156,26 +128,26 @@ extension ShoppingCart {
 }
 
 
-let bookCategory = Category(name: "Book", isTaxExempted: true)
-let medicineCategory = Category(name: "Medicine", isTaxExempted: true)
-let foodCategory = Category(name: "Food", isTaxExempted: true)
-let clothesCategory = Category(name: "Clothes", isTaxExempted: false)
-let gadgetsCategory = Category(name: "Gadgets", isTaxExempted: false)
+let bookCategory = Category(name: "Book", taxExempted: true)
+let medicineCategory = Category(name: "Medicine", taxExempted: true)
+let foodCategory = Category(name: "Food", taxExempted: true)
+let clothesCategory = Category(name: "Clothes", taxExempted: false)
+let gadgetsCategory = Category(name: "Gadgets", taxExempted: false)
 
 
 
 
 
-let book1 = Product(name: "b1", price: 433.1, isImported: true, category: bookCategory)
-let medicine1 = Product(name: "m1", price: 553.1, isImported: true, category: medicineCategory)
-let medicine2 = Product(name: "m2", price: 1323.1, isImported: false, category: medicineCategory)
-let food1 = Product(name: "f1", price: 9323.1211, isImported: true, category: foodCategory)
-let food2 = Product(name: "f2", price: 232.12, isImported: false, category: foodCategory)
-let food3 = Product(name: "f3", price: 233.1, isImported: true, category: foodCategory)
-let clothes1 = Product(name: "c1", price: 323.1, isImported: true, category: clothesCategory)
-let gadgets1 = Product(name: "g1", price: 223.1, isImported: true, category: gadgetsCategory)
-let gadgets2 = Product(name: "g2", price: 323.1, isImported: false, category: gadgetsCategory)
-let gadgets3 = Product(name: "g3", price: 223.1, isImported: true, category: gadgetsCategory)
+let book1 = Product(name: "b1", price: 433.1, imported: true, category: bookCategory)
+let medicine1 = Product(name: "m1", price: 553.1, imported: true, category: medicineCategory)
+let medicine2 = Product(name: "m2", price: 1323.1, imported: false, category: medicineCategory)
+let food1 = Product(name: "f1", price: 9323.1211, imported: true, category: foodCategory)
+let food2 = Product(name: "f2", price: 232.12, imported: false, category: foodCategory)
+let food3 = Product(name: "f3", price: 233.1, imported: true, category: foodCategory)
+let clothes1 = Product(name: "c1", price: 323.1, imported: true, category: clothesCategory)
+let gadgets1 = Product(name: "g1", price: 223.1, imported: true, category: gadgetsCategory)
+let gadgets2 = Product(name: "g2", price: 323.1, imported: false, category: gadgetsCategory)
+let gadgets3 = Product(name: "g3", price: 223.1, imported: true, category: gadgetsCategory)
 
 
 ShoppingCart.cart.add(product: book1)
