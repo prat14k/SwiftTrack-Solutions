@@ -52,5 +52,5 @@ final class PrimeNumbers {
 }
 
 
-
+// Will create problems after 10000
 PrimeNumbers.printfirstPrimeNumber(10)
