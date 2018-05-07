@@ -3,30 +3,22 @@
 import Foundation
 
 
+
 final class PrimeNumbers {
     
-    static func printfirstPrimeNumber(_ count: Int){
-        
-        var firstNPrimesCounter = count
-        
-        if count <= 0 {
-            return
-        }
+    static func printfirstPrimeNumber(_ count: Int) -> [Int] {
         
         var primeNumbers = [Int]()
         
-        // As 2 is a prime number
-        print(2)
-        primeNumbers.append(2)
-        
-        firstNPrimesCounter -= 1
-        if count == 1 {
-            return
+        if count <= 0 {
+            return primeNumbers
         }
         
+        // As 2 is a prime number
+        primeNumbers.append(2)
         
         var currentVal = 3
-        while firstNPrimesCounter > 0 {
+        while primeNumbers.count < count {
             
             var isPrime = true
             
@@ -38,13 +30,12 @@ final class PrimeNumbers {
             }
             
             if isPrime {
-                print(currentVal)
                 primeNumbers.append(currentVal)
-                firstNPrimesCounter -= 1
             }
-            currentVal += 1
+            currentVal += 2
         }
         
+        return primeNumbers
     }
     
     
@@ -52,5 +43,5 @@ final class PrimeNumbers {
 }
 
 
-// Will create problems after 10000
-PrimeNumbers.printfirstPrimeNumber(10)
+
+print(PrimeNumbers.printfirstPrimeNumber(1))
