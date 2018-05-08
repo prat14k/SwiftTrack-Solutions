@@ -3,12 +3,16 @@
 import Foundation
 
 
+let SALES_TAX_PERCENT: Double = 0.1
+let IMPORT_TAX_PERCENT: Double = 0.05
+
+
 class Category {
     
     let name: String
     private(set) var isTaxExempted: Bool
     
-
+    
     init(name: String, isTaxExempted: Bool) {
         self.name = name
         self.isTaxExempted = isTaxExempted
@@ -23,13 +27,14 @@ class Category {
 }
 
 
+
 class Product {
     
     let name: String
     let isImported: Bool
     private(set) var price: Double
     let category: Category
-    private let uuid = UUID()
+    let id = UUID()    // This will be an auto-incremented integer value recieved from the server
     
     
     init(name: String, price: Double, isImported: Bool , category: Category) {
@@ -39,14 +44,10 @@ class Product {
         self.category = category
     }
     
-    var description: String {
-        return "\(name)  |  \(String(format: "%.2f", price))"
-    }
     
     // Wanted it to not be accessible directly
-    func productCode() -> UUID {
-        return uuid
-    }
+    var ID : UUID  {   return id   }
+    
     
     func changePrice(_ price: Double) {
         // Any Checks to be performed
@@ -59,73 +60,176 @@ class Product {
 
 
 
-class ShoppingCart {
+class CartItem {
     
-    private var productsCart = [UUID:Product]()   // For storing the products uniquely
-    private var productsQuantity = [UUID:Int]()   // For storing the number of products each
+    let product: Product
+    private(set) var quantity: Int
+    
+    init(product: Product, quantity: Int = 1) {
+        self.product = product
+        self.quantity = max(quantity, 1)
+    }
+    
+    var cartItemID : UUID {   return product.ID   }
+    var isTaxExempted : Bool {   return product.category.isTaxExempted   }
+    var isImported : Bool {   return product.isImported   }
+    var price : Double {   return product.price   }
+    
+    var description: String {   return "\(product.name)  |  \(String(format: "%.2f", product.price))  |  \(quantity)"   }
+}
+
+
+
+
+extension CartItem {
+    
+    public static func createCartItem(product: Product, quantity: Int = 1) -> CartItem {
+        return CartItem(product: product, quantity: quantity)
+    }
+    
+    func addItems(count: Int = 1) {
+        quantity = quantity + max(count, 0)
+    }
+    
+    func removeItems(count: Int = 1) {
+        if count < 0  ||  quantity < count {
+            return
+        }
+        quantity = quantity - count
+    }
+    
+}
+
+
+
+
+class BillItems {
+    
+    private(set) var cartItem: CartItem
+    private(set) var totalImposedTax: Double
+    
+    init(item: CartItem, totalImposedTax: Double) {
+        self.cartItem = item
+        self.totalImposedTax = max(totalImposedTax, 0)
+    }
+    
+    var detailedInfo: String { return "\(cartItem.description)  |  \(String(format: "%.2f", totalImposedTax))" }
+}
+
+
+
+
+class Cart {
+    
+    private var cartItems = [UUID:CartItem]()   // For storing the cartItems
     
     private init() { }
     
-    public static let cart = ShoppingCart()
+    public static let cart = Cart()
+    
 }
 
-extension ShoppingCart {
+extension Cart {
     
-    func add(product: Product) {
-        let uuidCode = product.productCode()
-        if productsCart[uuidCode] != nil {
-            productsQuantity[uuidCode] = productsQuantity[uuidCode]! + 1
+    func isItemInCart(id: UUID) -> Bool{
+        if cartItems[id] != nil {
+            return true
         }
-        else {
-            productsCart[uuidCode] = product
-            productsQuantity[uuidCode] = 1
-        }
+        return false
     }
     
-    func remove(product: Product) {
-        let uuidCode = product.productCode()
-        if productsCart[uuidCode] != nil {
-            productsQuantity[uuidCode] = productsQuantity[uuidCode]! - 1
-            if productsQuantity[uuidCode]! == 0 {
-                productsQuantity.removeValue(forKey: uuidCode)
-                productsCart.removeValue(forKey: uuidCode)
+    private func checkItemHasQuantity(id: UUID) {
+        if let cartItem = cartItems[id] {
+            if cartItem.quantity < 1 {
+                cartItems.removeValue(forKey: id)
             }
         }
     }
     
 }
 
-
-extension ShoppingCart {
+extension Cart {
     
-    func calculatedBill() {
+    func add(product: Product, count: Int = 1) {
+        let id = product.ID
+        if isItemInCart(id: id) {
+            cartItems[id]!.addItems(count: count)
+        } else {
+            cartItems[id] = CartItem.createCartItem(product: product, quantity: count)
+        }
+    }
+    
+    func remove(product: Product, count: Int = 1)  {
+        let id = product.ID
+        if isItemInCart(id: id) {
+            cartItems[id]!.removeItems(count: count)
+            checkItemHasQuantity(id: id)
+        }
+    }
+    
+}
+
+extension Cart {
+    
+    func calculateImportTaxForItem(price: Double, isImported: Bool) -> Double {
+        if isImported {
+            return (price * IMPORT_TAX_PERCENT)   // 5% import tax
+        }
+        return 0.0
+    }
+    
+    func calculateSalesTaxForItem(price: Double , isTaxExempted: Bool) -> Double {
+        if !(isTaxExempted) {
+            return (price * SALES_TAX_PERCENT)   // 10% sales tax
+        }
+        return 0.0
+    }
+    
+    private func getBillItems() -> [BillItems]  {   // Can use this API for storing the billed items in db
         
+        var billItems = [BillItems]()
+        
+        for (_ , cartItem) in cartItems {
+            if cartItem.quantity > 0 {
+                let salesTax = calculateSalesTaxForItem(price: cartItem.price, isTaxExempted: cartItem.isTaxExempted)
+                let importTax = calculateImportTaxForItem(price: cartItem.price, isImported: cartItem.isImported)
+                let totalTax = (salesTax + importTax) * Double(cartItem.quantity)
+                
+                billItems.append(BillItems(item: cartItem, totalImposedTax: totalTax))
+            }
+        }
+        
+        return billItems
+    }
+    
+}
+
+extension Cart {
+    
+    func calculateFinalBill() {
         print("Final Bill Reciept:- \n\n")
+        
+        let billedItems = getBillItems()
         
         var finalBill: Double = 0.0
         
-        for (uuidCode, product) in productsCart {
-            if let quantity = productsQuantity[uuidCode], quantity > 0 {
-                var taxPerItem: Double = 0.0
-                if !(product.category.isTaxExempted) {
-                    taxPerItem += product.price * 0.1   // 10% import tax
-                }
-                if product.isImported {
-                    taxPerItem += product.price * 0.05   // 5% import tax
-                }
-                
-                let totalTax = taxPerItem * Double(quantity)
-                
-                print("\(product.description)  |  \(quantity)  |  \(String(format: "%.2f", totalTax))")
-                
-                finalBill += totalTax + product.price
-            }
+        for item in billedItems {
+            finalBill += item.cartItem.price + item.totalImposedTax
+            print(item.detailedInfo)
         }
         
-        print("TOTAL :-   \(Int(finalBill)) units")
+        print("\nTOTAL :-   \(Int(finalBill)) units")
     }
     
+    
 }
+
+
+
+
+
+
+// Testing Code
 
 
 let bookCategory = Category(name: "Book", isTaxExempted: true)
@@ -133,8 +237,6 @@ let medicineCategory = Category(name: "Medicine", isTaxExempted: true)
 let foodCategory = Category(name: "Food", isTaxExempted: true)
 let clothesCategory = Category(name: "Clothes", isTaxExempted: false)
 let gadgetsCategory = Category(name: "Gadgets", isTaxExempted: false)
-
-
 
 
 
@@ -150,22 +252,22 @@ let gadgets2 = Product(name: "g2", price: 323.1, isImported: false, category: ga
 let gadgets3 = Product(name: "g3", price: 223.1, isImported: true, category: gadgetsCategory)
 
 
-ShoppingCart.cart.add(product: book1)
-ShoppingCart.cart.add(product: medicine1)
-ShoppingCart.cart.add(product: book1)
-ShoppingCart.cart.add(product: medicine2)
-ShoppingCart.cart.add(product: food2)
-ShoppingCart.cart.add(product: food2)
-ShoppingCart.cart.add(product: food1)
-ShoppingCart.cart.add(product: food3)
-ShoppingCart.cart.add(product: clothes1)
-ShoppingCart.cart.add(product: gadgets3)
-ShoppingCart.cart.add(product: gadgets1)
+Cart.cart.add(product: book1)
+Cart.cart.add(product: medicine1)
+Cart.cart.add(product: book1)
+Cart.cart.add(product: medicine2)
+Cart.cart.add(product: food2)
+Cart.cart.add(product: food2)
+Cart.cart.add(product: food1)
+Cart.cart.add(product: food3)
+Cart.cart.add(product: clothes1)
+Cart.cart.add(product: gadgets3)
+Cart.cart.add(product: gadgets1)
 
 
-ShoppingCart.cart.remove(product: book1)
+Cart.cart.remove(product: book1)
 
-ShoppingCart.cart.calculatedBill()
+Cart.cart.calculateFinalBill()
 
 
 
