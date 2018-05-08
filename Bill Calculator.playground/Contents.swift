@@ -42,7 +42,7 @@ class Product {
     
     init?(name: String, price: Double, isImported: Bool , category: Category) {
         
-        guard !name.isEmpty && price < 0  else { return nil }
+        guard !name.isEmpty && price >= 0  else { return nil }
         
         self.name = name
         self.price = price
@@ -66,8 +66,7 @@ class CartItem {
     let product: Product
     private(set) var quantity: Int
     
-    init?(product: Product, quantity: Int = 1) {
-        guard quantity > 0  else { return nil }
+    private init(product: Product, quantity: Int = 1) {
         self.product = product
         self.quantity = quantity
     }
@@ -100,7 +99,8 @@ class CartItem {
 
 extension CartItem {
     
-    public static func create(product: Product, quantity: Int = 1) -> CartItem? {
+    public static func create(product: Product, quantity: Int = 1) throws -> CartItem {
+        guard quantity > 0  else { throw CartItemErrors.negativeItemsCountPassed("The number of items to be added should be greater than 0") }
         return CartItem(product: product, quantity: quantity)
     }
     
@@ -143,15 +143,15 @@ extension Cart {
 
 extension Cart {
     
+    @discardableResult
     func add(product: Product, count: Int = 1) throws -> Bool {
         let id = product.id
         if isInCart(id: id) {
             return try cartItems[id]!.add(count: count)
-        } else if let cartItem = CartItem.create(product: product, quantity: count) {
-            cartItems[id] = cartItem
+        } else {
+            cartItems[id] = try CartItem.create(product: product, quantity: count)
             return true
         }
-        return false
     }
     
     func remove(product: Product, count: Int = 1) throws {
@@ -208,7 +208,7 @@ let gadgets3 = Product(name: "g3", price: 223.1, isImported: true, category: gad
 
 
 do {
-    try Cart.cart.add(product: book1)
+    try Cart.cart.add(product: book1, count: 3)
 }
 catch CartItemErrors.negativeItemsCountPassed(let errorDescription) {
     print(errorDescription)
@@ -222,7 +222,7 @@ try? Cart.cart.add(product: medicine1)
 try? Cart.cart.add(product: book1)
 try? Cart.cart.add(product: medicine2)
 try? Cart.cart.add(product: food2)
-try? Cart.cart.add(product: food2)
+try? Cart.cart.add(product: food2, count: -43)
 try? Cart.cart.add(product: food1)
 try? Cart.cart.add(product: food3)
 try? Cart.cart.add(product: clothes1)
@@ -230,7 +230,7 @@ try? Cart.cart.add(product: gadgets3)
 try? Cart.cart.add(product: gadgets1)
 
 do {
-    try Cart.cart.remove(product: book1)
+    try Cart.cart.remove(product: book1, count: 4)
 }
 catch CartItemErrors.negativeItemsCountPassed(let errorDescription) {
     print(errorDescription)
