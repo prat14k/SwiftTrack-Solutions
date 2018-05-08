@@ -39,7 +39,7 @@ class Product {
     
     init(name: String, price: Double, isImported: Bool , category: Category) {
         self.name = name
-        self.price = price >= 0 ? price : 0 // Can be make compulsory for non-negative price via failable inits
+        self.price = max(price, 0) // Can be make compulsory for non-negative price via failable inits
         self.isImported = isImported
         self.category = category
     }
