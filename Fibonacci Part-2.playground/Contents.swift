@@ -1,5 +1,4 @@
 //: Playground - noun: a place where people can play
-
 import Foundation
 
 
@@ -11,7 +10,7 @@ enum FibonacciErrors : String, Error {
 
 
 class FibonacciSeries {
-
+    
     private static let MAX_LIMIT = 90
     
     
@@ -44,9 +43,9 @@ extension FibonacciSeries {
             return cacheSeries[N-1]
         }
         
-        var previousValue : Int = secondNumber
-        var valueBeforePreviousValue : Int = firstNumber
-        var currentValue : Int = 0
+        var previousValue : Int = cacheSeries[cacheSeries.count - 1]
+        var valueBeforePreviousValue : Int = cacheSeries[cacheSeries.count - 2]
+        var currentValue : Int = valueBeforePreviousValue + previousValue
         
         for _ in (cacheSeries.count+1)...N {
             currentValue = valueBeforePreviousValue + previousValue
@@ -55,6 +54,7 @@ extension FibonacciSeries {
             
             valueBeforePreviousValue = previousValue
             previousValue = currentValue
+            
         }
         
         return currentValue
@@ -68,7 +68,6 @@ let fibonacciSeriesObj = FibonacciSeries(firstNumber: 1, secondNumber: 1)
 
 
 // Will create overflow problem when N > 90
-
 do {
     print(try fibonacciSeriesObj.nThFibonacciNumber(5))
     print(try fibonacciSeriesObj.nThFibonacciNumber(20))
