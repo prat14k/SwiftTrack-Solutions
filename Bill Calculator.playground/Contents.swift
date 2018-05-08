@@ -3,29 +3,33 @@
 import Foundation
 
 
-let SALES_TAX_PERCENT: Double = 0.1
-let IMPORT_TAX_PERCENT: Double = 0.05
+enum CartItemErrors: Error {
+    case negativeItemsCountPassed(String)
+    case countValueGreaterThanQuantity(String)
+}
 
+
+struct TaxConstants {
+    static let SALES_TAX_PERCENT: Double = 0.1
+    static let IMPORT_TAX_PERCENT: Double = 0.05
+}
 
 class Category {
     
     let name: String
     private(set) var isTaxExempted: Bool
     
-    
     init(name: String, isTaxExempted: Bool) {
         self.name = name
         self.isTaxExempted = isTaxExempted
     }
     
-    
-    func changeTaxExemption(status: Bool) {
+    func updateTaxExemption(status: Bool) {
         // Any Checks to be performed
         isTaxExempted = status
     }
     
 }
-
 
 
 class Product {
@@ -36,24 +40,21 @@ class Product {
     let category: Category
     let id = UUID()    // This will be an auto-incremented integer value recieved from the server
     
-    
-    init(name: String, price: Double, isImported: Bool , category: Category) {
+    init?(name: String, price: Double, isImported: Bool , category: Category) {
+        
+        guard !name.isEmpty && price < 0  else { return nil }
+        
         self.name = name
-        self.price = max(price, 0) // Can be make compulsory for non-negative price via failable inits
+        self.price = price
         self.isImported = isImported
         self.category = category
+        
     }
     
     
-    // Wanted it to not be accessible directly
-    var ID : UUID  {   return id   }
-    
-    
-    func changePrice(_ price: Double) {
+    func update(price: Double) {
         // Any Checks to be performed
-        if price < 0 {
-            return
-        }
+        guard price > 0   else  {  return  }
         self.price = price
     }
 }
@@ -65,57 +66,60 @@ class CartItem {
     let product: Product
     private(set) var quantity: Int
     
-    init(product: Product, quantity: Int = 1) {
+    init?(product: Product, quantity: Int = 1) {
+        guard quantity > 0  else { return nil }
         self.product = product
-        self.quantity = max(quantity, 1)
+        self.quantity = quantity
     }
     
-    var cartItemID : UUID {   return product.ID   }
-    var isTaxExempted : Bool {   return product.category.isTaxExempted   }
-    var isImported : Bool {   return product.isImported   }
-    var price : Double {   return product.price   }
+    var productID: UUID {   return product.id   }
+    var isTaxExempted: Bool {   return product.category.isTaxExempted   }
+    var isImported: Bool {   return product.isImported   }
+    var productPrice: Double {   return product.price   }
     
-    var description: String {   return "\(product.name)  |  \(String(format: "%.2f", product.price))  |  \(quantity)"   }
+    var importTax: Double {
+        if isImported {
+            return (productPrice * TaxConstants.IMPORT_TAX_PERCENT)   // 5% import tax
+        }
+        return 0.0
+    }
+    
+    var salesTax: Double {
+        if !(isTaxExempted) {
+            return (productPrice * TaxConstants.SALES_TAX_PERCENT)   // 10% sales tax
+        }
+        return 0.0
+    }
+    
+    var totalImposedTax: Double {  return (importTax + salesTax) * Double(quantity)  }
+    
+    var descriptiveInfo: String {   return "\(product.name)  |  \(String(format: "%.2f", productPrice))  |  \(quantity)  |  \(totalImposedTax)"   }
 }
-
 
 
 
 extension CartItem {
     
-    public static func createCartItem(product: Product, quantity: Int = 1) -> CartItem {
+    public static func create(product: Product, quantity: Int = 1) -> CartItem? {
         return CartItem(product: product, quantity: quantity)
     }
     
-    func addItems(count: Int = 1) {
-        quantity = quantity + max(count, 0)
+    @discardableResult
+    func add(count: Int = 1) throws -> Bool {
+        guard count > 0  else { throw CartItemErrors.negativeItemsCountPassed("The number of items to be added should be greater than 0") }
+        quantity = quantity + count
+        return true
     }
     
-    func removeItems(count: Int = 1) {
-        if count < 0  ||  quantity < count {
-            return
-        }
+    @discardableResult
+    func remove(count: Int = 1) throws -> Int {
+        guard count > 0  else { throw CartItemErrors.negativeItemsCountPassed("The number of items to be added should be greater than 0") }
+        guard quantity > count  else { throw CartItemErrors.countValueGreaterThanQuantity("The number of items to be added should be less than the current quantity") }
         quantity = quantity - count
+        return quantity
     }
     
 }
-
-
-
-
-class BillItems {
-    
-    private(set) var cartItem: CartItem
-    private(set) var totalImposedTax: Double
-    
-    init(item: CartItem, totalImposedTax: Double) {
-        self.cartItem = item
-        self.totalImposedTax = max(totalImposedTax, 0)
-    }
-    
-    var detailedInfo: String { return "\(cartItem.description)  |  \(String(format: "%.2f", totalImposedTax))" }
-}
-
 
 
 
@@ -131,16 +135,29 @@ class Cart {
 
 extension Cart {
     
-    func isItemInCart(id: UUID) -> Bool{
-        if cartItems[id] != nil {
+    func isInCart(id: UUID) -> Bool{
+        return cartItems[id] != nil
+    }
+    
+}
+
+extension Cart {
+    
+    func add(product: Product, count: Int = 1) throws -> Bool {
+        let id = product.id
+        if isInCart(id: id) {
+            return try cartItems[id]!.add(count: count)
+        } else if let cartItem = CartItem.create(product: product, quantity: count) {
+            cartItems[id] = cartItem
             return true
         }
         return false
     }
     
-    private func checkItemHasQuantity(id: UUID) {
-        if let cartItem = cartItems[id] {
-            if cartItem.quantity < 1 {
+    func remove(product: Product, count: Int = 1) throws {
+        let id = product.id
+        if isInCart(id: id) {
+            if try cartItems[id]!.remove(count: count) < 1 {
                 cartItems.removeValue(forKey: id)
             }
         }
@@ -148,74 +165,17 @@ extension Cart {
     
 }
 
-extension Cart {
-    
-    func add(product: Product, count: Int = 1) {
-        let id = product.ID
-        if isItemInCart(id: id) {
-            cartItems[id]!.addItems(count: count)
-        } else {
-            cartItems[id] = CartItem.createCartItem(product: product, quantity: count)
-        }
-    }
-    
-    func remove(product: Product, count: Int = 1)  {
-        let id = product.ID
-        if isItemInCart(id: id) {
-            cartItems[id]!.removeItems(count: count)
-            checkItemHasQuantity(id: id)
-        }
-    }
-    
-}
-
-extension Cart {
-    
-    func calculateImportTaxForItem(price: Double, isImported: Bool) -> Double {
-        if isImported {
-            return (price * IMPORT_TAX_PERCENT)   // 5% import tax
-        }
-        return 0.0
-    }
-    
-    func calculateSalesTaxForItem(price: Double , isTaxExempted: Bool) -> Double {
-        if !(isTaxExempted) {
-            return (price * SALES_TAX_PERCENT)   // 10% sales tax
-        }
-        return 0.0
-    }
-    
-    private func getBillItems() -> [BillItems]  {   // Can use this API for storing the billed items in db
-        
-        var billItems = [BillItems]()
-        
-        for (_ , cartItem) in cartItems {
-            if cartItem.quantity > 0 {
-                let salesTax = calculateSalesTaxForItem(price: cartItem.price, isTaxExempted: cartItem.isTaxExempted)
-                let importTax = calculateImportTaxForItem(price: cartItem.price, isImported: cartItem.isImported)
-                let totalTax = (salesTax + importTax) * Double(cartItem.quantity)
-                
-                billItems.append(BillItems(item: cartItem, totalImposedTax: totalTax))
-            }
-        }
-        
-        return billItems
-    }
-    
-}
 
 extension Cart {
     
     func calculateFinalBill() {
         print("Final Bill Reciept:- \n\n")
         
-        let billedItems = getBillItems()
-        
         var finalBill: Double = 0.0
         
-        for item in billedItems {
-            finalBill += item.cartItem.price + item.totalImposedTax
-            print(item.detailedInfo)
+        for (_, item) in cartItems {
+            finalBill += item.productPrice + item.totalImposedTax
+            print(item.descriptiveInfo)
         }
         
         print("\nTOTAL :-   \(Int(finalBill)) units")
@@ -226,11 +186,7 @@ extension Cart {
 
 
 
-
-
-
 // Testing Code
-
 
 let bookCategory = Category(name: "Book", isTaxExempted: true)
 let medicineCategory = Category(name: "Medicine", isTaxExempted: true)
@@ -238,36 +194,50 @@ let foodCategory = Category(name: "Food", isTaxExempted: true)
 let clothesCategory = Category(name: "Clothes", isTaxExempted: false)
 let gadgetsCategory = Category(name: "Gadgets", isTaxExempted: false)
 
+/// Can be used checks here to know whether it is not nil. Just unwrapping it for now.
+let book1 = Product(name: "b1", price: 433.1, isImported: true, category: bookCategory)!
+let medicine1 = Product(name: "m1", price: 553.1, isImported: true, category: medicineCategory)!
+let medicine2 = Product(name: "m2", price: 1323.1, isImported: false, category: medicineCategory)!
+let food1 = Product(name: "f1", price: 9323.1211, isImported: true, category: foodCategory)!
+let food2 = Product(name: "f2", price: 232.12, isImported: false, category: foodCategory)!
+let food3 = Product(name: "f3", price: 233.1, isImported: true, category: foodCategory)!
+let clothes1 = Product(name: "c1", price: 323.1, isImported: true, category: clothesCategory)!
+let gadgets1 = Product(name: "g1", price: 223.1, isImported: true, category: gadgetsCategory)!
+let gadgets2 = Product(name: "g2", price: 323.1, isImported: false, category: gadgetsCategory)!
+let gadgets3 = Product(name: "g3", price: 223.1, isImported: true, category: gadgetsCategory)!
 
 
-let book1 = Product(name: "b1", price: 433.1, isImported: true, category: bookCategory)
-let medicine1 = Product(name: "m1", price: 553.1, isImported: true, category: medicineCategory)
-let medicine2 = Product(name: "m2", price: 1323.1, isImported: false, category: medicineCategory)
-let food1 = Product(name: "f1", price: 9323.1211, isImported: true, category: foodCategory)
-let food2 = Product(name: "f2", price: 232.12, isImported: false, category: foodCategory)
-let food3 = Product(name: "f3", price: 233.1, isImported: true, category: foodCategory)
-let clothes1 = Product(name: "c1", price: 323.1, isImported: true, category: clothesCategory)
-let gadgets1 = Product(name: "g1", price: 223.1, isImported: true, category: gadgetsCategory)
-let gadgets2 = Product(name: "g2", price: 323.1, isImported: false, category: gadgetsCategory)
-let gadgets3 = Product(name: "g3", price: 223.1, isImported: true, category: gadgetsCategory)
+do {
+    try Cart.cart.add(product: book1)
+}
+catch CartItemErrors.negativeItemsCountPassed(let errorDescription) {
+    print(errorDescription)
+}
+catch CartItemErrors.countValueGreaterThanQuantity(let errorDescription) {
+    print(errorDescription)
+}
 
 
-Cart.cart.add(product: book1)
-Cart.cart.add(product: medicine1)
-Cart.cart.add(product: book1)
-Cart.cart.add(product: medicine2)
-Cart.cart.add(product: food2)
-Cart.cart.add(product: food2)
-Cart.cart.add(product: food1)
-Cart.cart.add(product: food3)
-Cart.cart.add(product: clothes1)
-Cart.cart.add(product: gadgets3)
-Cart.cart.add(product: gadgets1)
+try? Cart.cart.add(product: medicine1)
+try? Cart.cart.add(product: book1)
+try? Cart.cart.add(product: medicine2)
+try? Cart.cart.add(product: food2)
+try? Cart.cart.add(product: food2)
+try? Cart.cart.add(product: food1)
+try? Cart.cart.add(product: food3)
+try? Cart.cart.add(product: clothes1)
+try? Cart.cart.add(product: gadgets3)
+try? Cart.cart.add(product: gadgets1)
 
+do {
+    try Cart.cart.remove(product: book1)
+}
+catch CartItemErrors.negativeItemsCountPassed(let errorDescription) {
+    print(errorDescription)
+}
+catch CartItemErrors.countValueGreaterThanQuantity(let errorDescription) {
+    print(errorDescription)
+}
 
-Cart.cart.remove(product: book1)
 
 Cart.cart.calculateFinalBill()
-
-
-
