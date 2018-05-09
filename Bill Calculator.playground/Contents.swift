@@ -13,11 +13,12 @@ extension Array where Element: Equatable {
 
 
 enum CartItemError: Error {
-    case negativeItemsCountPassed(String)
+    case negativeValueForQuantityPassed(String)
     case countValueGreaterThanQuantity(String)
 }
 
 enum CartError: Error {
+    case negativeUpdateForQuantityPassed(String)
     case itemNotFound
 }
 
@@ -36,11 +37,6 @@ class Category {
         self.isTaxExempted = isTaxExempted
     }
     
-//    func updateTaxExemption(status: Bool) {
-//        // Any Checks to be performed
-//        isTaxExempted = status
-//    }
-
 }
 
 
@@ -118,23 +114,12 @@ extension CartItem: Equatable {
 extension CartItem {
     
     public static func create(product: Product, quantity: Int = 1) throws -> CartItem {
-        guard quantity > 0  else { throw CartItemError.negativeItemsCountPassed("The number of \(product.name) \(product.category.name.lowercased())'s to be added should be greater than 0") }
+        guard quantity > 0  else { throw CartItemError.negativeValueForQuantityPassed("The number of \(product.name) \(product.category.name.lowercased())'s to be added should be greater than 0") }
         return CartItem(product: product, quantity: quantity)
     }
     
-    @discardableResult
-    func update(count: Int = 1) throws -> Bool {
-        guard count > 0  else { throw CartItemError.negativeItemsCountPassed("The number of \(product.name) \(product.category.name.lowercased())'s to be added should be greater than 0") }
-        quantity = quantity + count
-        return true
-    }
-    
-    @discardableResult
-    func remove(count: Int = 1) throws -> Int {
-        guard count > 0  else { throw CartItemError.negativeItemsCountPassed("The number of \(product.name) \(product.category.name.lowercased())'s to be removed should be greater than 0") }
-        guard quantity >= count  else { throw CartItemError.countValueGreaterThanQuantity("The number of \(product.name) \(product.category.name.lowercased())'s to be removed should be less than the current quantity(i.e. \(quantity))") }
-        quantity = quantity - count
-        return quantity
+    func updateTo(quantity: Int) {
+        self.quantity = quantity
     }
     
 }
@@ -165,24 +150,34 @@ extension Cart {
 
 extension Cart {
     
-    @discardableResult
-    func add(product: Product, count: Int = 1) throws -> Bool {
+    func add(product: Product, count: Int = 1) throws {
         let id = product.id
+        guard count > 0  else { throw CartError.negativeUpdateForQuantityPassed("The number of \(product.name) \(product.category.name.lowercased())'s to be added should be greater than 0") }
+        
         if let item = findItem(id: id) {
-            return try item.update(count: count)
+            item.updateTo(quantity: (item.quantity + count))
         } else {
             cartItems.append(try CartItem.create(product: product, quantity: count))
-            return true
         }
     }
     
     func remove(product: Product, count: Int = 1) throws {
         let id = product.id
-        guard let item = findItem(id: id)  else { throw CartError.itemNotFound }
         
-        if try item.remove(count: count) < 1 {
+        guard let item = findItem(id: id)  else { throw CartError.itemNotFound }
+        guard count > 0  else { throw CartError.negativeUpdateForQuantityPassed("The number of \(product.name) \(product.category.name.lowercased())'s to be removed should be greater than 0") }
+        guard item.quantity >= count  else { throw CartItemError.countValueGreaterThanQuantity("The number of \(product.name) \(product.category.name.lowercased())'s to be removed should be less than the current quantity(i.e. \(item.quantity))") }
+        
+        if item.quantity == count {
             cartItems.delete(element: item)
+        } else {
+            item.updateTo(quantity: item.quantity - count)
         }
+        
+    }
+    
+    func clear() {
+        cartItems.removeAll()
     }
     
 }
@@ -232,7 +227,7 @@ let gadgets3 = Product(name: "g3", price: 223.1, isImported: true, category: gad
 do {
     try Cart.cart.add(product: book1, count: 3)
 }
-catch CartItemError.negativeItemsCountPassed(let errorDescription) {
+catch CartError.negativeUpdateForQuantityPassed(let errorDescription) {
     print(errorDescription)
 }
 catch CartItemError.countValueGreaterThanQuantity(let errorDescription) {
@@ -240,22 +235,22 @@ catch CartItemError.countValueGreaterThanQuantity(let errorDescription) {
 }
 
 
- try? Cart.cart.add(product: medicine1)
- try? Cart.cart.add(product: book1)
- try? Cart.cart.add(product: medicine2)
- try? Cart.cart.add(product: food2)
- try? Cart.cart.add(product: food2, count: -43)
- try? Cart.cart.add(product: food1)
- try? Cart.cart.add(product: food3)
- try? Cart.cart.add(product: clothes1)
- try? Cart.cart.add(product: gadgets3)
- try? Cart.cart.add(product: gadgets1)
+try? Cart.cart.add(product: medicine1)
+try? Cart.cart.add(product: book1)
+try? Cart.cart.add(product: medicine2)
+try? Cart.cart.add(product: food2)
+try? Cart.cart.add(product: food2, count: -43)
+try? Cart.cart.add(product: food1)
+try? Cart.cart.add(product: food3)
+try? Cart.cart.add(product: clothes1)
+try? Cart.cart.add(product: gadgets3)
+try? Cart.cart.add(product: gadgets1)
 
 
 do {
     try Cart.cart.remove(product: book1, count: 4)
 }
-catch CartItemError.negativeItemsCountPassed(let errorDescription) {
+catch CartError.negativeUpdateForQuantityPassed(let errorDescription) {
     print(errorDescription)
 }
 catch CartItemError.countValueGreaterThanQuantity(let errorDescription) {
