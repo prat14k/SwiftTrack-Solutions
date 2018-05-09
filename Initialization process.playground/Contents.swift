@@ -97,6 +97,7 @@ For Structs, they automatically receive a memberwise initializer even if they do
  
  */
 
+
 class HumanBeing {
     var name: String
     init(name: String) {
@@ -130,4 +131,3 @@ let manObj3 = Man(name: "Pratham", age: 10)
 manObj1.name
 manObj2.name
 manObj3.name
-
