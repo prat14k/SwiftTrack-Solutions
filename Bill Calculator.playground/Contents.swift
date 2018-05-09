@@ -3,11 +3,23 @@
 import Foundation
 
 
-enum CartItemErrors: Error {
+extension Array where Element: Equatable {
+    @discardableResult
+    mutating func delete(element: Element) -> Element? {
+        guard let index = self.index(of: element)  else { return nil }
+        return self.remove(at: index)
+    }
+}
+
+
+enum CartItemError: Error {
     case negativeItemsCountPassed(String)
     case countValueGreaterThanQuantity(String)
 }
 
+enum CartError: Error {
+    case itemNotFound
+}
 
 struct TaxConstants {
     static let SALES_TAX_PERCENT: Double = 0.1
@@ -96,25 +108,31 @@ class CartItem {
 }
 
 
+extension CartItem: Equatable {
+    static func == (lhs: CartItem, rhs: CartItem) -> Bool {
+        return lhs.productID == rhs.productID
+    }
+}
+
 
 extension CartItem {
     
     public static func create(product: Product, quantity: Int = 1) throws -> CartItem {
-        guard quantity > 0  else { throw CartItemErrors.negativeItemsCountPassed("The number of \(product.name) \(product.category.name.lowercased())'s to be added should be greater than 0") }
+        guard quantity > 0  else { throw CartItemError.negativeItemsCountPassed("The number of \(product.name) \(product.category.name.lowercased())'s to be added should be greater than 0") }
         return CartItem(product: product, quantity: quantity)
     }
     
     @discardableResult
     func update(count: Int = 1) throws -> Bool {
-        guard count > 0  else { throw CartItemErrors.negativeItemsCountPassed("The number of \(product.name) \(product.category.name.lowercased())'s to be added should be greater than 0") }
+        guard count > 0  else { throw CartItemError.negativeItemsCountPassed("The number of \(product.name) \(product.category.name.lowercased())'s to be added should be greater than 0") }
         quantity = quantity + count
         return true
     }
     
     @discardableResult
     func remove(count: Int = 1) throws -> Int {
-        guard count > 0  else { throw CartItemErrors.negativeItemsCountPassed("The number of \(product.name) \(product.category.name.lowercased())'s to be removed should be greater than 0") }
-        guard quantity >= count  else { throw CartItemErrors.countValueGreaterThanQuantity("The number of \(product.name) \(product.category.name.lowercased())'s to be removed should be less than the current quantity(i.e. \(quantity))") }
+        guard count > 0  else { throw CartItemError.negativeItemsCountPassed("The number of \(product.name) \(product.category.name.lowercased())'s to be removed should be greater than 0") }
+        guard quantity >= count  else { throw CartItemError.countValueGreaterThanQuantity("The number of \(product.name) \(product.category.name.lowercased())'s to be removed should be less than the current quantity(i.e. \(quantity))") }
         quantity = quantity - count
         return quantity
     }
@@ -125,7 +143,7 @@ extension CartItem {
 
 class Cart {
     
-    private var cartItems = [UUID:CartItem]()   // For storing the cartItems
+    private var cartItems = [CartItem]()   // For storing the cartItems
     
     private init() { }
     
@@ -135,8 +153,12 @@ class Cart {
 
 extension Cart {
     
-    func isInCart(id: UUID) -> Bool{
-        return cartItems[id] != nil
+    func findItem(id: UUID) -> CartItem?{
+        return cartItems.first { $0.productID == id }
+    }
+    
+    func indexForItem(id: UUID) -> Int?{
+        return cartItems.enumerated().filter { $0.element.productID == id }.map({ $0.offset }).first
     }
     
 }
@@ -146,20 +168,20 @@ extension Cart {
     @discardableResult
     func add(product: Product, count: Int = 1) throws -> Bool {
         let id = product.id
-        if isInCart(id: id) {
-            return try cartItems[id]!.update(count: count)
+        if let item = findItem(id: id) {
+            return try item.update(count: count)
         } else {
-            cartItems[id] = try CartItem.create(product: product, quantity: count)
+            cartItems.append(try CartItem.create(product: product, quantity: count))
             return true
         }
     }
     
     func remove(product: Product, count: Int = 1) throws {
         let id = product.id
-        if isInCart(id: id) {
-            if try cartItems[id]!.remove(count: count) < 1 {
-                cartItems.removeValue(forKey: id)
-            }
+        guard let item = findItem(id: id)  else { throw CartError.itemNotFound }
+        
+        if try item.remove(count: count) < 1 {
+            cartItems.delete(element: item)
         }
     }
     
@@ -173,7 +195,7 @@ extension Cart {
         
         var finalBill: Double = 0.0
         
-        for (_, item) in cartItems {
+        cartItems.forEach { (item) in
             finalBill += item.productPrice + item.totalImposedTax
             print(item.descriptiveInfo)
         }
@@ -210,10 +232,10 @@ let gadgets3 = Product(name: "g3", price: 223.1, isImported: true, category: gad
 do {
     try Cart.cart.add(product: book1, count: 3)
 }
-catch CartItemErrors.negativeItemsCountPassed(let errorDescription) {
+catch CartItemError.negativeItemsCountPassed(let errorDescription) {
     print(errorDescription)
 }
-catch CartItemErrors.countValueGreaterThanQuantity(let errorDescription) {
+catch CartItemError.countValueGreaterThanQuantity(let errorDescription) {
     print(errorDescription)
 }
 
@@ -233,11 +255,14 @@ catch CartItemErrors.countValueGreaterThanQuantity(let errorDescription) {
 do {
     try Cart.cart.remove(product: book1, count: 4)
 }
-catch CartItemErrors.negativeItemsCountPassed(let errorDescription) {
+catch CartItemError.negativeItemsCountPassed(let errorDescription) {
     print(errorDescription)
 }
-catch CartItemErrors.countValueGreaterThanQuantity(let errorDescription) {
+catch CartItemError.countValueGreaterThanQuantity(let errorDescription) {
     print(errorDescription)
+}
+catch CartError.itemNotFound {
+    print("The item is not been added to the cart.")
 }
 
 
