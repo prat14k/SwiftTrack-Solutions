@@ -97,4 +97,37 @@ For Structs, they automatically receive a memberwise initializer even if they do
  
  */
 
+class HumanBeing {
+    var name: String
+    init(name: String) {
+        self.name = name
+    }
+    convenience init() {
+        self.init(name: "not set")
+    }
+}
+
+let humanBeingObj1 = HumanBeing()
+let humanBeingObj2 = HumanBeing(name: "Prateek")
+
+class Man: HumanBeing {
+    var age:Int = 0
+    override init(name: String) {
+        super.init(name: name)
+    }
+    init(name: String, age:Int) {
+        super.init(name: name)
+        self.name = name
+        self.age = age
+    }
+}
+
+
+let manObj1 = Man()
+let manObj2 = Man(name: "Prateekpreet")
+let manObj3 = Man(name: "Pratham", age: 10)
+
+manObj1.name
+manObj2.name
+manObj3.name
 
