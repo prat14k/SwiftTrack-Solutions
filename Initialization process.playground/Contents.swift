@@ -131,3 +131,49 @@ let manObj3 = Man(name: "Pratham", age: 10)
 manObj1.name
 manObj2.name
 manObj3.name
+
+
+/*:
+
+## Inheriting initializers:
+
+Classes can inherit inits only in certain conditions:-
+* If a subclass is not having any designated init, all the designated init will get inherited.
+* If a subclass is having all the super class designated inits(either via inheritance or manual overriding), all the convinience inits will get inherited.
+
+Note: If we provide implementation of a superclass designated init, we are then overriding the superclass implementation. But if we are providing implementation of a superclass convenience init, then it be replacing the implementation of that init.
+
+ */
+ 
+class TissuePaper {
+    var material: String
+    init(material: String) {
+        self.material = material
+    }
+    convenience init() {
+        self.init(material: "Wood")
+    }
+}
+
+class TissuePaperBox: TissuePaper {
+    var quantity: Int
+    init(material: String, quantity: Int) {
+        self.quantity = quantity
+        super.init(material: material)
+    }
+    override convenience init(material: String) {     // Overriding superclass designated initializer. Due to this, the superclass convenience init is also inherited
+        self.init(material: material, quantity: 1)
+    }
+}
+
+class TissuePaperCarton: TissuePaperBox {
+    
+    var numberOfBoxes: Int = 1
+    
+    // All superclass Designated inits are inherited as no custom init have been written.
+    // All superclass convenience init are inherited as all superclass designated init are available.
+}
+
+
+
+
