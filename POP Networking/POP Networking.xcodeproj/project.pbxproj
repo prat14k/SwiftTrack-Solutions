@@ -1,0 +1,480 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		84E6330DDE6E8F557364C636 /* Pods_POP_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0A44E98F0AF0C9C1866DB04 /* Pods_POP_Networking.framework */; };
+		DF2C688820A48895006C737C /* Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2C688720A48895006C737C /* Validator.swift */; };
+		DF37556820A435F300D348D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF37556720A435F300D348D9 /* AppDelegate.swift */; };
+		DF37556A20A435F300D348D9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF37556920A435F300D348D9 /* ViewController.swift */; };
+		DF37556D20A435F300D348D9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF37556B20A435F300D348D9 /* Main.storyboard */; };
+		DF37556F20A435F900D348D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF37556E20A435F900D348D9 /* Assets.xcassets */; };
+		DF37557220A435F900D348D9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF37557020A435F900D348D9 /* LaunchScreen.storyboard */; };
+		DF37557A20A4368A00D348D9 /* NetworkProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF37557920A4368A00D348D9 /* NetworkProtocol.swift */; };
+		DF5917FE20A58E6D00E2F4FE /* ErrorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5917FD20A58E6D00E2F4FE /* ErrorExtension.swift */; };
+		DF6A3AA220A57A9A00DA65EA /* WeatherDataRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A3AA120A57A9A00DA65EA /* WeatherDataRequester.swift */; };
+		DF6A3AA420A58AFD00DA65EA /* RequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A3AA320A58AFD00DA65EA /* RequestError.swift */; };
+		DFC7A18E20A4551800BBA76A /* RequestTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC7A18D20A4551800BBA76A /* RequestTransform.swift */; };
+		DFC7A19020A46C2E00BBA76A /* Routes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC7A18F20A46C2E00BBA76A /* Routes.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		8C99F88EB4F75F818ED40D2E /* Pods-POP Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-POP Networking.release.xcconfig"; path = "Pods/Target Support Files/Pods-POP Networking/Pods-POP Networking.release.xcconfig"; sourceTree = "<group>"; };
+		D0A44E98F0AF0C9C1866DB04 /* Pods_POP_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_POP_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF2C688720A48895006C737C /* Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validator.swift; sourceTree = "<group>"; };
+		DF37556420A435F300D348D9 /* POP Networking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "POP Networking.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF37556720A435F300D348D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DF37556920A435F300D348D9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		DF37556C20A435F300D348D9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		DF37556E20A435F900D348D9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DF37557120A435F900D348D9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		DF37557320A435F900D348D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DF37557920A4368A00D348D9 /* NetworkProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkProtocol.swift; sourceTree = "<group>"; };
+		DF5917FD20A58E6D00E2F4FE /* ErrorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorExtension.swift; sourceTree = "<group>"; };
+		DF6A3AA120A57A9A00DA65EA /* WeatherDataRequester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDataRequester.swift; sourceTree = "<group>"; };
+		DF6A3AA320A58AFD00DA65EA /* RequestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestError.swift; sourceTree = "<group>"; };
+		DFC7A18D20A4551800BBA76A /* RequestTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestTransform.swift; sourceTree = "<group>"; };
+		DFC7A18F20A46C2E00BBA76A /* Routes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Routes.swift; sourceTree = "<group>"; };
+		F4D4893AACC6AABDD0FC8F55 /* Pods-POP Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-POP Networking.debug.xcconfig"; path = "Pods/Target Support Files/Pods-POP Networking/Pods-POP Networking.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DF37556120A435F300D348D9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84E6330DDE6E8F557364C636 /* Pods_POP_Networking.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		51AECD02E610005BB99A3042 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D0A44E98F0AF0C9C1866DB04 /* Pods_POP_Networking.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A9B816B1A87C825655F27D12 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F4D4893AACC6AABDD0FC8F55 /* Pods-POP Networking.debug.xcconfig */,
+				8C99F88EB4F75F818ED40D2E /* Pods-POP Networking.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		DF37555B20A435F300D348D9 = {
+			isa = PBXGroup;
+			children = (
+				DF37556620A435F300D348D9 /* POP Networking */,
+				DF37556520A435F300D348D9 /* Products */,
+				A9B816B1A87C825655F27D12 /* Pods */,
+				51AECD02E610005BB99A3042 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		DF37556520A435F300D348D9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DF37556420A435F300D348D9 /* POP Networking.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DF37556620A435F300D348D9 /* POP Networking */ = {
+			isa = PBXGroup;
+			children = (
+				DF37556720A435F300D348D9 /* AppDelegate.swift */,
+				DF37557020A435F900D348D9 /* LaunchScreen.storyboard */,
+				DF37556B20A435F300D348D9 /* Main.storyboard */,
+				DF37556E20A435F900D348D9 /* Assets.xcassets */,
+				DF37557320A435F900D348D9 /* Info.plist */,
+				DF6A3AA520A58B8000DA65EA /* Controllers */,
+				DF5917FC20A58E4A00E2F4FE /* Extensions */,
+				DF6A3AA620A58BC500DA65EA /* Request Helpers */,
+				DF6A3AA820A58C1000DA65EA /* Routes */,
+				DF6A3AA720A58BF900DA65EA /* Response Validators */,
+				DF6A3AA920A58C1F00DA65EA /* Data Requester */,
+			);
+			path = "POP Networking";
+			sourceTree = "<group>";
+		};
+		DF5917FC20A58E4A00E2F4FE /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				DF5917FD20A58E6D00E2F4FE /* ErrorExtension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		DF6A3AA520A58B8000DA65EA /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				DF37556920A435F300D348D9 /* ViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		DF6A3AA620A58BC500DA65EA /* Request Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				DF37557920A4368A00D348D9 /* NetworkProtocol.swift */,
+				DFC7A18D20A4551800BBA76A /* RequestTransform.swift */,
+			);
+			path = "Request Helpers";
+			sourceTree = "<group>";
+		};
+		DF6A3AA720A58BF900DA65EA /* Response Validators */ = {
+			isa = PBXGroup;
+			children = (
+				DF2C688720A48895006C737C /* Validator.swift */,
+				DF6A3AA320A58AFD00DA65EA /* RequestError.swift */,
+			);
+			path = "Response Validators";
+			sourceTree = "<group>";
+		};
+		DF6A3AA820A58C1000DA65EA /* Routes */ = {
+			isa = PBXGroup;
+			children = (
+				DFC7A18F20A46C2E00BBA76A /* Routes.swift */,
+			);
+			path = Routes;
+			sourceTree = "<group>";
+		};
+		DF6A3AA920A58C1F00DA65EA /* Data Requester */ = {
+			isa = PBXGroup;
+			children = (
+				DF6A3AA120A57A9A00DA65EA /* WeatherDataRequester.swift */,
+			);
+			path = "Data Requester";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DF37556320A435F300D348D9 /* POP Networking */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DF37557620A435F900D348D9 /* Build configuration list for PBXNativeTarget "POP Networking" */;
+			buildPhases = (
+				CCA447225641121BF50D2267 /* [CP] Check Pods Manifest.lock */,
+				DF37556020A435F300D348D9 /* Sources */,
+				DF37556120A435F300D348D9 /* Frameworks */,
+				DF37556220A435F300D348D9 /* Resources */,
+				680371BCA5DBE659D46BC541 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "POP Networking";
+			productName = "POP Networking";
+			productReference = DF37556420A435F300D348D9 /* POP Networking.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DF37555C20A435F300D348D9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0930;
+				LastUpgradeCheck = 0930;
+				ORGANIZATIONNAME = vinsol;
+				TargetAttributes = {
+					DF37556320A435F300D348D9 = {
+						CreatedOnToolsVersion = 9.3;
+					};
+				};
+			};
+			buildConfigurationList = DF37555F20A435F300D348D9 /* Build configuration list for PBXProject "POP Networking" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DF37555B20A435F300D348D9;
+			productRefGroup = DF37556520A435F300D348D9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DF37556320A435F300D348D9 /* POP Networking */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DF37556220A435F300D348D9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF37557220A435F900D348D9 /* LaunchScreen.storyboard in Resources */,
+				DF37556F20A435F900D348D9 /* Assets.xcassets in Resources */,
+				DF37556D20A435F300D348D9 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		680371BCA5DBE659D46BC541 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-POP Networking/Pods-POP Networking-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-POP Networking/Pods-POP Networking-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CCA447225641121BF50D2267 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-POP Networking-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DF37556020A435F300D348D9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF6A3AA420A58AFD00DA65EA /* RequestError.swift in Sources */,
+				DF37556A20A435F300D348D9 /* ViewController.swift in Sources */,
+				DF6A3AA220A57A9A00DA65EA /* WeatherDataRequester.swift in Sources */,
+				DFC7A19020A46C2E00BBA76A /* Routes.swift in Sources */,
+				DF5917FE20A58E6D00E2F4FE /* ErrorExtension.swift in Sources */,
+				DF2C688820A48895006C737C /* Validator.swift in Sources */,
+				DF37556820A435F300D348D9 /* AppDelegate.swift in Sources */,
+				DFC7A18E20A4551800BBA76A /* RequestTransform.swift in Sources */,
+				DF37557A20A4368A00D348D9 /* NetworkProtocol.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		DF37556B20A435F300D348D9 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DF37556C20A435F300D348D9 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		DF37557020A435F900D348D9 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DF37557120A435F900D348D9 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		DF37557420A435F900D348D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		DF37557520A435F900D348D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DF37557720A435F900D348D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F4D4893AACC6AABDD0FC8F55 /* Pods-POP Networking.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "POP Networking/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "vinsol.POP-Networking";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DF37557820A435F900D348D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8C99F88EB4F75F818ED40D2E /* Pods-POP Networking.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "POP Networking/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "vinsol.POP-Networking";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DF37555F20A435F300D348D9 /* Build configuration list for PBXProject "POP Networking" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DF37557420A435F900D348D9 /* Debug */,
+				DF37557520A435F900D348D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DF37557620A435F900D348D9 /* Build configuration list for PBXNativeTarget "POP Networking" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DF37557720A435F900D348D9 /* Debug */,
+				DF37557820A435F900D348D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DF37555C20A435F300D348D9 /* Project object */;
+}

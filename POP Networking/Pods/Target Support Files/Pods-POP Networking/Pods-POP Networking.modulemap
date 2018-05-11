@@ -1,0 +1,6 @@
+framework module Pods_POP_Networking {
+  umbrella header "Pods-POP Networking-umbrella.h"
+
+  export *
+  module * { export * }
+}
