@@ -118,7 +118,6 @@ class Man: HumanBeing {
     }
     init(name: String, age:Int) {
         super.init(name: name)
-        self.name = name
         self.age = age
     }
 }
